@@ -30,7 +30,7 @@ const Register = () => {
             // Redirigir al login después de un registro exitoso
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.error || 'Error al registrar usuario');
+            setError(err.response?.data?.error || 'Error al registrar usuario REGISTER');
             console.error('Error:', err.response?.data);
         }
     };

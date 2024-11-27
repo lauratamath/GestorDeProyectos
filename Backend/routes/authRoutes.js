@@ -1,5 +1,3 @@
-// backend/routes/authRoutes.js
-
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -16,20 +14,12 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'El usuario ya existe' });
         }
 
-        // Log para debugging
-        console.log('Datos recibidos:', { name, email, password: '***' });
-
         const user = new User({ name, email, password });
         await user.save();
-        console.log('Usuario guardado exitosamente');
         res.status(201).json({ message: 'Usuario registrado con éxito' });
     } catch (err) {
         console.error('Error detallado:', err);
-        res.status(500).json({ 
-            error: 'Error al registrar usuario', 
-            details: err.message,
-            code: err.code
-        });
+        res.status(500).json({ error: 'Error al registrar usuario' });
     }
 });
 
