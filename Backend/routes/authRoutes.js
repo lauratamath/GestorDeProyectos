@@ -1,36 +1,69 @@
+// backend/routes/authRoutes.js
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-
 const router = express.Router();
 
-// Registro
+// Registro de usuario
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     try {
+        // Verificar si el usuario ya existe
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'El usuario ya existe' });
+        }
+
+        // Log para debugging
+        console.log('Datos recibidos:', { name, email, password: '***' });
+
         const user = new User({ name, email, password });
         await user.save();
+        
+        console.log('Usuario guardado exitosamente');
         res.status(201).json({ message: 'Usuario registrado con éxito' });
     } catch (err) {
-        res.status(500).json({ error: 'Error al registrar usuario', details: err.message });
+        console.error('Error detallado:', err);
+        res.status(500).json({ 
+            error: 'Error al registrar usuario', 
+            details: err.message,
+            code: err.code
+        });
     }
 });
 
-// Inicio de sesión
+// Iniciar sesión
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
     try {
+        const { email, password } = req.body;
+
+        // Validaciones
+        if (!email || !password) {
+            return res.status(400).json({ msg: 'Por favor ingrese todos los campos' });
+        }
+
+        // Verificar usuario
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+        if (!user) {
+            return res.status(400).json({ msg: 'El usuario no existe' });
+        }
 
+        // Comparar contraseñas
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ error: 'Contraseña incorrecta' });
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Contraseña incorrecta' });
+        }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-    } catch (err) {
-        res.status(500).json({ error: 'Error al iniciar sesión', details: err.message });
+        // Crear y firmar un token de sesión
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+            expiresIn: '1h', // Token válido por 1 hora
+        });
+
+        res.json({ token, user });
+    } catch (error) {
+        res.status(500).json({ msg: 'Error en el servidor' });
     }
 });
 

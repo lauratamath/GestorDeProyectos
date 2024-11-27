@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
+import Register from './components/Pages/Register';
+import Login from './components/Pages/Login';
 
-const App = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-        </Router>
-    );
-};
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

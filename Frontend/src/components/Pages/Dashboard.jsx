@@ -1,5 +1,5 @@
 import React from 'react';
-import Board from '../components/Kanban/Board';
+import Board from '../Kanban/Board';
 
 const Dashboard = () => {
     return (
