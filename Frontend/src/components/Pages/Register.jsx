@@ -12,6 +12,7 @@ const Register = () => {
         password: '',
     });
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const { name, email, password } = formData;
 
@@ -20,6 +21,7 @@ const Register = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSuccessMessage(''); 
 
         try {
             await axios.post('http://localhost:5000/api/auth/register', { 
@@ -27,8 +29,11 @@ const Register = () => {
                 email, 
                 password 
             });
-            // Redirigir al login después de un registro exitoso
-            navigate('/');
+            setSuccessMessage('¡Cuenta creada con éxito! Te redirigiremos a la pantalla de login.');
+            
+            setTimeout(() => {
+                navigate('/'); 
+            }, 7000); // 7 segundos
         } catch (err) {
             setError(err.response?.data?.error || 'Error al registrar usuario REGISTER');
             console.error('Error:', err.response?.data);
@@ -92,6 +97,13 @@ const Register = () => {
                         </div>
                     </form>
                 </div>
+
+                {successMessage && (
+                    <div className="text-xs font-medium text-c-success mt-5">
+                        {successMessage}
+                    </div>
+                )}       
+                
                 <div className="text-center">
                     <p className="mt-2 text-sm text-c-Blue">
                         ¿Ya tienes cuenta?{' '}

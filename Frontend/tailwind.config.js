@@ -18,7 +18,8 @@ module.exports = {
         'c-Pink': '#F2C2CC',
         'c-Orange': '#F29057',
         'c-Orange2': '#FF7B2E',
-        'c-error': '#A24006'
+        'c-error': '#A24006',
+        'c-success': '#27b54a',
       },
       spacing: {
         'loginImg-H': '6.5625em', // Height of login image 
