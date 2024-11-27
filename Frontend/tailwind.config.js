@@ -23,7 +23,7 @@ module.exports = {
       },
       spacing: {
         'loginImg-H': '6.5625em', // Height of login image 
-        'whiteBox-W': '33.875em', //Width of login white box
+        'whiteBox-W': '53.875em', //Width of login white box
         'whiteBox-H': '39.125em', //Height of login white box
       },
       boxShadow: {
@@ -36,7 +36,7 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
-  daisyui: {
+  /* daisyui: {
     themes: ["light", "dark", "cupcake"], 
-  },
+  }, */
 };
