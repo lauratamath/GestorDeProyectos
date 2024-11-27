@@ -28,31 +28,25 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validaciones
         if (!email || !password) {
-            return res.status(400).json({ msg: 'Por favor ingrese todos los campos' });
+            return res.status(400).json({ error: 'Por favor ingrese todos los campos' });
         }
 
-        // Verificar usuario
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ msg: 'El usuario no existe' });
+            return res.status(400).json({ error: 'El usuario no existe' });
         }
 
-        // Comparar contraseñas
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Contraseña incorrecta' });
+            return res.status(400).json({ error: 'Contraseña incorrecta' });
         }
 
-        // Crear y firmar un token de sesión
-        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
-            expiresIn: '1h', // Token válido por 1 hora
-        });
-
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, user });
     } catch (error) {
-        res.status(500).json({ msg: 'Error en el servidor' });
+        console.error('Error detallado:', error);
+        res.status(500).json({ error: 'Error en el servidor', details: error.message });
     }
 });
 
