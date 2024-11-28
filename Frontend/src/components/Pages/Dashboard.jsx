@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createProject, getProjects } from '../../services/api';
+import { createProject, getProjects, getCurrentUser } from '../../services/api';
 import Board from '../Kanban/Board';
 import logo from '../images/logo2.png';
 
@@ -7,10 +7,18 @@ const Dashboard = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState({ name: '', description: '' });
     const [selectedProject, setSelectedProject] = useState(null);
+    const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        
+        // Obtener los proyectos
         getProjects(token).then(response => setProjects(response.data));
+
+        // Obtener los datos del usuario
+        getCurrentUser(token)
+            .then(response => setUserName(response.data.name)) // Asumiendo que la API devuelve { name: 'Nombre del usuario' }
+            .catch(err => console.error('Error al obtener el usuario:', err));
     }, []);
 
     const handleCreateProject = async (e) => {
@@ -20,59 +28,70 @@ const Dashboard = () => {
             const response = await createProject(newProject.name, newProject.description, token);
             const createdProject = response.data;
 
-            // Actualiza la lista de proyectos y selecciona el nuevo
             setProjects([...projects, createdProject]);
             setNewProject({ name: '', description: '' });
-            setSelectedProject(createdProject._id); // Selecciona automáticamente el nuevo proyecto
+            setSelectedProject(createdProject._id);
         } catch (err) {
             console.error('Error creando el proyecto:', err);
         }
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
+        <div className="p-6 bg-base-100 min-h-screen font-inter">
             {/* Encabezado */}
-            <div className="flex items-center mt-7">
-                <img src={logo} alt="cover" className="md:h-loginImg-H h-20" />
-                <h1 className="text-c-Blue ml-3 text-2xl md:text-lg font-bold mb-8">Tablero Kanban</h1>
+            <div className="flex items-center justify-between mt-5 mb-1">
+                <div className="flex items-center">
+                    <img src={logo} alt="cover" className="h-loginImg-H md:h-logoDash-H" />
+                    <h1 className="text-c-Blue ml-3 md:text-4xl text-lg font-bold mb-8">
+                        Tablero Kanban
+                    </h1>
+                </div>
+                <div className="flex md:text-2xl text-lg text-c-Blue font-medium text-center">
+                        Hola,{' '}
+                        <p className="font-semibold ml-1 text-c-Orange hover:text-c-Orange2">
+                            {userName || 'Usuario'}
+                        </p>
+                        !
+                </div>
             </div>
+            <hr className='bg-c-Orange2 mb-5 h-1'/>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Formulario para crear un nuevo proyecto */}
-                <div className="bg-base-200 p-6 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-semibold mb-4">Crear un Proyecto</h2>
+                {/* Formulario para crear un proyecto */}
+                <div className="bg-c-Grey p-6 rounded-lg shadow-lg">
+                    <h2 className="md:text-2xl text-lg font-semibold  text-c-Blue mb-4">Crear un Proyecto</h2>
                     <form onSubmit={handleCreateProject} className="space-y-4">
                         <input
                             type="text"
                             placeholder="Nombre del Proyecto"
                             value={newProject.name}
                             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                            className="input input-bordered w-full"
+                            className="input input-bordered w-full md:text-base text-sm"
                             required
                         />
                         <textarea
                             placeholder="Descripción del Proyecto"
                             value={newProject.description}
                             onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                            className="textarea textarea-bordered w-full"
+                            className="textarea textarea-bordered w-full md:text-base text-sm"
                         />
-                        <button type="submit" className="btn btn-primary w-full">
+                        <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">
                             Crear Proyecto
                         </button>
                     </form>
                 </div>
 
                 {/* Dropdown para seleccionar un proyecto */}
-                <div className="bg-base-200 p-6 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-semibold mb-4">Selecciona un Proyecto</h2>
+                <div className="p-6 rounded-lg shadow-lg  bg-c-Grey">
+                    <h2 className="md:text-2xl text-lg font-semibold  text-c-Blue mb-4">Selecciona un Proyecto</h2>
                     <select
                         value={selectedProject || ''}
                         onChange={(e) => setSelectedProject(e.target.value)}
                         className="select select-bordered w-full"
                     >
-                        <option value="" disabled>Selecciona un proyecto</option>
+                        <option value="" disabled >-- Selecciona un proyecto --</option>
                         {projects.map(project => (
-                            <option key={project._id} value={project._id}>
+                            <option key={project._id} value={project._id} className='hover:bg-c-Orange'>
                                 {project.name}
                             </option>
                         ))}
@@ -86,7 +105,7 @@ const Dashboard = () => {
                     <Board selectedProject={selectedProject} />
                 </div>
             ) : (
-                <div className="mt-8 text-center text-xl text-gray-500">
+                <div className="mt-8 text-center text-xl text-gray-200">
                     Selecciona un proyecto para visualizar las tareas.
                 </div>
             )}

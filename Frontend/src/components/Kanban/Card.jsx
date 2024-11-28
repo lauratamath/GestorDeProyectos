@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { updateTask, deleteTask } from '../../services/api'; // Asegúrate de importar las funciones para editar y eliminar tareas
+import { updateTask, deleteTask } from '../../services/api'; 
+import edit from '../images/edit.png'
+import deleteIcon from '../images/closed.png'
+import delete2 from '../images/open.png'
 
 const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedTask, setEditedTask] = useState(task);
+    const [hoveringDelete, setHoveringDelete] = useState(false);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -11,16 +16,16 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
     };
 
     const handleSaveChanges = () => {
-        // Aquí guardamos los cambios
+        // Guardar los cambios
         onEditTask(editedTask);
         setIsEditing(false); // Salimos del modo de edición
     };
 
     return (
-        <div className="card p-4 shadow-md rounded-md mb-4">
+        <div className="card p-4 shadow-md rounded-md mt-1 mb-4">
             {!isEditing ? (
                 <>
-                    <h3 className="font-semibold text-xl">{task.title}</h3>
+                    <h3 className="font-semibold text-lg">{task.title}</h3>
                     <p>{task.description}</p>
                     <p>Fecha de vencimiento: {task.dueDate}</p>
 
@@ -38,15 +43,17 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                         <div className="flex space-x-2">
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="btn btn-secondary btn-sm"
+                                className="btn hover:bg-slate-50 btn-secondary btn-sm  outline-none border-transparent bg-transparent hover:border-transparent"
                             >
-                                Editar
+                                <img src={edit} alt="Editar" className="w-6 h-6 hover:opacity-90" />
                             </button>
                             <button
+                                onMouseEnter={() => setHoveringDelete(true)}
+                                onMouseLeave={() => setHoveringDelete(false)}
                                 onClick={() => onDeleteTask(task._id)}
-                                className="btn btn-error btn-sm"
+                                className="btn btn-error btn-sm p-2 hover:bg-slate-50 flex items-center justify-center content-end  outline-none border-transparent bg-transparent hover:border-transparent"
                             >
-                                Eliminar
+                                <img src={hoveringDelete ? delete2 : deleteIcon} alt="Eliminar" className="w-6 h-6" />
                             </button>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ import Card from './Card';
 
 const Column = ({ status, tasks, onStatusChange, onDeleteTask }) => {
     return (
-        <div className="column">
+        <div className="column md:text-base text-sm">
             <h2>{status}</h2>
             {tasks.map(task => (
                 <Card 

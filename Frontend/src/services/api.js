@@ -82,3 +82,11 @@ export const getUsers = async (token) => {
         headers: { 'x-auth-token': token },
     });
 };
+
+// Obtener datos del usuario autenticado
+export const getCurrentUser = async (token) => {
+    return await axios.get(`${API_URL}/auth/me`, { // Cambia '/auth/me' si el endpoint es diferente
+        headers: { 'x-auth-token': token },
+    });
+};
+

@@ -61,9 +61,9 @@ const Board = ({ selectedProject }) => {
     };
 
     return (
-        <div className="p-6 bg-base-100 min-h-screen">
-            <div className="bg-base-200 p-6 rounded-lg shadow-lg mb-8">
-                <h2 className="text-2xl font-semibold mb-4">Agregar Nueva Tarea</h2>
+        <div className="py-6 px-2 bg-base-100 min-h-screen font-inter">
+            <div className="bg-c-Grey p-6 rounded-lg shadow-lg mb-8">
+                <h2 className="md:text-2xl text-lg font-semibold  text-c-Blue mb-4">Agregar nueva tarea</h2>
                 <form onSubmit={handleAddTask} className="space-y-4">
                     <input
                         type="text"
@@ -95,11 +95,11 @@ const Board = ({ selectedProject }) => {
                             <option key={user._id} value={user._id}>{user.name}</option>
                         ))}
                     </select>
-                    <button type="submit" className="btn btn-primary w-full">Agregar Tarea</button>
+                    <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">Agregar tarea</button>
                 </form>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 font-semibold text-c-Blue md:text-2xl text-lg gap-6">
                 {['Por hacer', 'En curso', 'Finalizada'].map(status => (
                     <Column
                         key={status}

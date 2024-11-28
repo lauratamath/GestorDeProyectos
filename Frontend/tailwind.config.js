@@ -18,6 +18,7 @@ module.exports = {
         'c-Pink': '#F2C2CC',
         'c-Orange': '#F29057',
         'c-Orange2': '#FF7B2E',
+        'c-Grey': '#f3f3f3',
         'c-error': '#A24006',
         'c-success': '#27b54a',
       },
@@ -25,6 +26,7 @@ module.exports = {
         'loginImg-H': '6.5625em', // Height of login image 
         'whiteBox-W': '53.875em', //Width of login white box
         'whiteBox-H': '39.125em', //Height of login white box
+        'logoDash-H': '12.125em',
       },
       boxShadow: {
         'custom': '0px 7px 41px 0px rgba(0, 0, 0, 0.25)', // #00000040 en formato rgba

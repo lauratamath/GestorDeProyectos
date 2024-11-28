@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Registro de usuario
@@ -59,5 +60,20 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+// Obtener datos del usuario autenticado
+router.get('/me', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password'); // Excluye el campo password
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+});
+
 
 module.exports = router;
