@@ -70,11 +70,13 @@ export const updateProject = async (projectId, name, description, token) => {
 };
 
 // Eliminar proyecto
+// services/api.js
 export const deleteProject = async (projectId, token) => {
     return await axios.delete(`${API_URL}/projects/${projectId}`, {
-        headers: { 'x-auth-token': token },
+        headers: { 'x-auth-token': token }
     });
 };
+
 
 // Obtener usuarios
 export const getUsers = async (token) => {

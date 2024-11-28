@@ -34,7 +34,7 @@ router.put('/:projectId', authMiddleware, async (req, res) => {
     const { name, description } = req.body;
     try {
         const project = await Project.findOneAndUpdate(
-            { _id: req.params.projectId, userId: req.user.id }, // Asegúrate de que el usuario sea dueño del proyecto
+            { _id: req.params.projectId, userId: req.user.id }, 
             { name, description },
             { new: true } // Devolver el proyecto actualizado
         );

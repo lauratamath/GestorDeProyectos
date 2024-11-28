@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createProject, getProjects, getCurrentUser } from '../../services/api';
+import { createProject, getProjects, getCurrentUser, deleteProject  } from '../../services/api';
 import Board from '../Kanban/Board';
 import logo from '../images/logo2.png';
 
@@ -17,7 +17,7 @@ const Dashboard = () => {
 
         // Obtener los datos del usuario
         getCurrentUser(token)
-            .then(response => setUserName(response.data.name)) // Asumiendo que la API devuelve { name: 'Nombre del usuario' }
+            .then(response => setUserName(response.data.name)) 
             .catch(err => console.error('Error al obtener el usuario:', err));
     }, []);
 
@@ -35,6 +35,24 @@ const Dashboard = () => {
             console.error('Error creando el proyecto:', err);
         }
     };
+
+    const handleDeleteProject = async () => {
+        if (selectedProject) {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await deleteProject(selectedProject, token); // Llamada a la función deleteProject
+                console.log('Proyecto eliminado', response.data); // Verifica la respuesta del servidor
+    
+                // Actualizar la lista de proyectos y desmarcar el proyecto seleccionado
+                setProjects(projects.filter(project => project._id !== selectedProject));
+                setSelectedProject(null); // Desmarcar el proyecto seleccionado
+            } catch (err) {
+                console.error('Error eliminando el proyecto:', err);
+            }
+        }
+    };
+    
+    
 
     return (
         <div className="p-6 bg-base-100 min-h-screen font-inter">
@@ -107,6 +125,17 @@ const Dashboard = () => {
             ) : (
                 <div className="mt-8 text-center text-xl text-gray-200">
                     Selecciona un proyecto para visualizar las tareas.
+                </div>
+            )}
+
+            {selectedProject && (
+                <div className="mt-8 flex justify-end">
+                    <button
+                        onClick={handleDeleteProject}
+                        className="btn text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
+                    >
+                        Eliminar Proyecto
+                    </button>
                 </div>
             )}
         </div>
