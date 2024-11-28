@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createProject, getProjects } from '../../services/api';
 import Board from '../Kanban/Board';
-import logo from '../images/logo2.png'
+import logo from '../images/logo2.png';
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -30,12 +30,13 @@ const Dashboard = () => {
     };
 
     return (
-        <div cclassName="p-6 bg-base-100 min-h-screen">
-            <div className='flex items-center mt-7'>
-                <img src={logo} alt="cover" className='max-auto md:h-loginImg-H h-20' w-auto/>
-                <h1 className='text-c-Blue ml-3 text-2xl md:text-lg font-bold mb-8'>Tablero Kanban</h1>
+        <div className="p-6 bg-base-100 min-h-screen">
+            {/* Encabezado */}
+            <div className="flex items-center mt-7">
+                <img src={logo} alt="cover" className="md:h-loginImg-H h-20" />
+                <h1 className="text-c-Blue ml-3 text-2xl md:text-lg font-bold mb-8">Tablero Kanban</h1>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Formulario para crear un nuevo proyecto */}
                 <div className="bg-base-200 p-6 rounded-lg shadow-lg">
@@ -43,7 +44,7 @@ const Dashboard = () => {
                     <form onSubmit={handleCreateProject} className="space-y-4">
                         <input
                             type="text"
-                            placeholder="Nombre del Proyectoaa"
+                            placeholder="Nombre del Proyecto"
                             value={newProject.name}
                             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                             className="input input-bordered w-full"
