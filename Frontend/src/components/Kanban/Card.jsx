@@ -1,43 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { updateTask, deleteTask } from '../../services/api'; // Asegúrate de importar las funciones para editar y eliminar tareas
 
-const Card = ({ task, onStatusChange }) => {
+const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedTask, setEditedTask] = useState(task);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
+    };
+
+    const handleSaveChanges = () => {
+        // Aquí guardamos los cambios
+        onEditTask(editedTask);
+        setIsEditing(false); // Salimos del modo de edición
+    };
+
     return (
-        <div className="card bg-base-100 shadow-xl p-4 rounded-lg mb-4">
-            <h3 className="text-xl font-semibold mb-2">{task.title}</h3>
-            <p className="text-gray-600 mb-4">{task.description}</p>
-            
-            {/* Dropdown para seleccionar el estado de la tarea */}
-            <div className="dropdown">
-                <button className="btn btn-outline w-full text-left">
-                    {task.status || 'Seleccionar estado'}
-                </button>
-                <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full">
-                    <li>
-                        <button
-                            onClick={() => onStatusChange(task._id, 'Por hacer')}
-                            className="btn btn-ghost w-full text-left"
+        <div className="card p-4 shadow-md rounded-md mb-4">
+            {!isEditing ? (
+                <>
+                    <h3 className="font-semibold text-xl">{task.title}</h3>
+                    <p>{task.description}</p>
+                    <p>Fecha de vencimiento: {task.dueDate}</p>
+
+                    <div className="flex justify-between items-center mt-4">
+                        <select
+                            value={task.status}
+                            onChange={(e) => onStatusChange(task._id, e.target.value)}
+                            className="select select-bordered w-1/3"
                         >
-                            Por hacer
-                        </button>
-                    </li>
-                    <li>
+                            <option value="Por hacer">Por hacer</option>
+                            <option value="En curso">En curso</option>
+                            <option value="Finalizada">Finalizada</option>
+                        </select>
+
+                        <div className="flex space-x-2">
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="btn btn-secondary btn-sm"
+                            >
+                                Editar
+                            </button>
+                            <button
+                                onClick={() => onDeleteTask(task._id)}
+                                className="btn btn-error btn-sm"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <input
+                        type="text"
+                        name="title"
+                        value={editedTask.title}
+                        onChange={handleChange}
+                        className="input input-bordered w-full mb-2"
+                    />
+                    <textarea
+                        name="description"
+                        value={editedTask.description}
+                        onChange={handleChange}
+                        className="textarea textarea-bordered w-full mb-2"
+                    />
+                    <input
+                        type="date"
+                        name="dueDate"
+                        value={editedTask.dueDate}
+                        onChange={handleChange}
+                        className="input input-bordered w-full mb-2"
+                    />
+
+                    <div className="flex justify-between mt-4">
                         <button
-                            onClick={() => onStatusChange(task._id, 'En curso')}
-                            className="btn btn-ghost w-full text-left"
+                            onClick={handleSaveChanges}
+                            className="btn btn-primary"
                         >
-                            En curso
+                            Guardar
                         </button>
-                    </li>
-                    <li>
                         <button
-                            onClick={() => onStatusChange(task._id, 'Finalizada')}
-                            className="btn btn-ghost w-full text-left"
+                            onClick={() => setIsEditing(false)}
+                            className="btn btn-secondary"
                         >
-                            Finalizada
+                            Cancelar
                         </button>
-                    </li>
-                </ul>
-            </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

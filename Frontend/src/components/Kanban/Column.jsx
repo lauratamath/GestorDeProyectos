@@ -2,12 +2,17 @@
 import React from 'react';
 import Card from './Card';
 
-const Column = ({ status, tasks, onStatusChange }) => {
+const Column = ({ status, tasks, onStatusChange, onDeleteTask }) => {
     return (
         <div className="column">
             <h2>{status}</h2>
             {tasks.map(task => (
-                <Card key={task._id} task={task} onStatusChange={onStatusChange} />
+                <Card 
+                    key={task._id} 
+                    task={task} 
+                    onStatusChange={onStatusChange} 
+                    onDeleteTask={onDeleteTask} // Pasar la función de eliminación
+                />
             ))}
         </div>
     );

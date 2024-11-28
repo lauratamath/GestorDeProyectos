@@ -43,7 +43,7 @@ const Dashboard = () => {
                     <form onSubmit={handleCreateProject} className="space-y-4">
                         <input
                             type="text"
-                            placeholder="Nombre del Proyecto"
+                            placeholder="Nombre del Proyectoaa"
                             value={newProject.name}
                             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                             className="input input-bordered w-full"
