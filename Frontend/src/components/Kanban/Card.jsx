@@ -9,6 +9,13 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
     const [editedTask, setEditedTask] = useState(task);
     const [hoveringDelete, setHoveringDelete] = useState(false);
 
+    // Vencimiento de fecha
+    const isOverdue = new Date(task.dueDate) < new Date();
+
+    // Asignamos las clases dependiendo si está vencida o no
+    const cardClasses = isOverdue
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error"  // Rojo si está vencida
+        : "card p-4 shadow-md rounded-md mt-1 mb-4";
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,14 +27,15 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
         onEditTask(editedTask);
         setIsEditing(false); // Salimos del modo de edición
     };
+    
 
     return (
-        <div className="card p-4 shadow-md rounded-md mt-1 mb-4">
+        <div className={cardClasses}>
             {!isEditing ? (
                 <>
                     <h3 className="font-semibold text-lg">{task.title}</h3>
                     <p>{task.description}</p>
-                    <p>Fecha de vencimiento: {task.dueDate}</p>
+                    <p>Fecha de vencimiento: {new Date(task.dueDate).toLocaleDateString()}</p>
 
                     <div className="flex justify-between items-center mt-4">
                         <select

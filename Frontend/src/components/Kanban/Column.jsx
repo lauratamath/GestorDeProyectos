@@ -2,7 +2,7 @@
 import React from 'react';
 import Card from './Card';
 
-const Column = ({ status, tasks, onStatusChange, onDeleteTask }) => {
+const Column = ({ status, tasks, onStatusChange, onDeleteTask, onEditTask }) => {
     return (
         <div className="column md:text-base text-sm">
             <h2>{status}</h2>
@@ -12,6 +12,7 @@ const Column = ({ status, tasks, onStatusChange, onDeleteTask }) => {
                     task={task} 
                     onStatusChange={onStatusChange} 
                     onDeleteTask={onDeleteTask} // Pasar la función de eliminación
+                    onEditTask={onEditTask} 
                 />
             ))}
         </div>
