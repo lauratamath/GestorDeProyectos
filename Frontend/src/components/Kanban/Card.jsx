@@ -12,10 +12,12 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
     // Vencimiento de fecha
     const isOverdue = new Date(task.dueDate) < new Date();
 
-    // Asignamos las clases dependiendo si está vencida o no
-    const cardClasses = isOverdue
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error"  // Rojo si está vencida
-        : "card p-4 shadow-md rounded-md mt-1 mb-4";
+    // Asignamos las clases dependiendo si está vencida o no, pero solo si no está finalizada
+    const cardClasses = task.status === "Finalizada" 
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4" // Color normal si está finalizada
+        : isOverdue
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error" // Rojo si está vencida y no finalizada
+        : "card p-4 shadow-md rounded-md mt-1 mb-4"; // Color normal si no está vencida
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,7 +29,6 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
         onEditTask(editedTask);
         setIsEditing(false); // Salimos del modo de edición
     };
-    
 
     return (
         <div className={cardClasses}>
@@ -51,7 +52,7 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                         <div className="flex space-x-2">
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="btn hover:bg-slate-50 btn-secondary btn-sm  outline-none border-transparent bg-transparent hover:border-transparent"
+                                className="btn hover:bg-slate-50 btn-secondary btn-sm outline-none border-transparent bg-transparent hover:border-transparent"
                             >
                                 <img src={edit} alt="Editar" className="w-6 h-6 hover:opacity-90" />
                             </button>
@@ -59,7 +60,7 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                                 onMouseEnter={() => setHoveringDelete(true)}
                                 onMouseLeave={() => setHoveringDelete(false)}
                                 onClick={() => onDeleteTask(task._id)}
-                                className="btn btn-error btn-sm p-2 hover:bg-slate-50 flex items-center justify-center content-end  outline-none border-transparent bg-transparent hover:border-transparent"
+                                className="btn btn-error btn-sm p-2 hover:bg-slate-50 flex items-center justify-center content-end outline-none border-transparent bg-transparent hover:border-transparent"
                             >
                                 <img src={hoveringDelete ? delete2 : deleteIcon} alt="Eliminar" className="w-6 h-6" />
                             </button>
