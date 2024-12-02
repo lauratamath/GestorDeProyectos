@@ -3,13 +3,12 @@ import axios from 'axios';
 const API_URL = 'http://localhost:5000/api';
 
 // Crear proyecto
-export const createProject = async (name, description, token) => {
-    return await axios.post(`${API_URL}/projects`, { name, description }, {
+export const createProject = async (projectData, token) => {
+    return axios.post(`${API_URL}/projects`, projectData, {
         headers: { 'x-auth-token': token },
     });
 };
 
-// Obtener proyectos
 export const getProjects = async (token) => {
     return await axios.get(`${API_URL}/projects`, {
         headers: { 'x-auth-token': token },
@@ -70,24 +69,27 @@ export const updateProject = async (projectId, name, description, token) => {
 };
 
 // Eliminar proyecto
-// services/api.js
 export const deleteProject = async (projectId, token) => {
     return await axios.delete(`${API_URL}/projects/${projectId}`, {
         headers: { 'x-auth-token': token }
     });
 };
 
-
-// Obtener usuarios
 export const getUsers = async (token) => {
-    return await axios.get(`${API_URL}/users`, {
+    return axios.get(`${API_URL}/projects/users`, {
+        headers: { 'x-auth-token': token },
+    });
+};
+
+export const updateProjectMembers = async (projectId, members, token) => {
+    return axios.put(`${API_URL}/projects/${projectId}/members`, { members }, {
         headers: { 'x-auth-token': token },
     });
 };
 
 // Obtener datos del usuario autenticado
 export const getCurrentUser = async (token) => {
-    return await axios.get(`${API_URL}/auth/me`, { // Cambia '/auth/me' si el endpoint es diferente
+    return await axios.get(`${API_URL}/auth/me`, { 
         headers: { 'x-auth-token': token },
     });
 };

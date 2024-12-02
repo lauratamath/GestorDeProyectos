@@ -1,36 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { createProject, getProjects, getCurrentUser, deleteProject  } from '../../services/api';
+import { createProject, getProjects, getCurrentUser, deleteProject, getUsers } from '../../services/api';
 import Board from '../Kanban/Board';
 import logo from '../images/logo2.png';
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState({ name: '', description: '' });
+    const [selectedMembers, setSelectedMembers] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
     const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
+    const [users, setUsers] = useState([]);
+
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token de autenticación no encontrado');
+            return;
+        }
         
-        // Obtener los proyectos
-        getProjects(token).then(response => setProjects(response.data));
+        const fetchData = async () => {
+            try {
+                const [projectsRes, userRes, usersRes] = await Promise.all([
+                    getProjects(token),
+                    getCurrentUser(token),
+                    getUsers(token)
+                ]);
+                
+                setProjects(projectsRes.data);
+                setUserName(userRes.data.name);
+                setUsers(usersRes.data);
+            } catch (err) {
+                console.error('Error al cargar datos:', err);
+            }
+        };
 
-        // Obtener los datos del usuario
-        getCurrentUser(token)
-            .then(response => setUserName(response.data.name)) 
-            .catch(err => console.error('Error al obtener el usuario:', err));
+        fetchData();
     }, []);
+    
 
     const handleCreateProject = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
         try {
-            const response = await createProject(newProject.name, newProject.description, token);
-            const createdProject = response.data;
+            const response = await createProject({
+                name: newProject.name,
+                description: newProject.description,
+                members: selectedMembers
+            }, token);
 
-            setProjects([...projects, createdProject]);
+            setProjects([...projects, response.data]);
             setNewProject({ name: '', description: '' });
-            setSelectedProject(createdProject._id);
+            setSelectedMembers([]);
+            setSelectedProject(response.data._id);
         } catch (err) {
             console.error('Error creando el proyecto:', err);
         }
@@ -93,6 +115,29 @@ const Dashboard = () => {
                             onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
                             className="textarea textarea-bordered w-full md:text-base text-sm"
                         />
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Seleccionar Miembros</span>
+                            </label>
+                            <select
+                                multiple
+                                value={selectedMembers}
+                                onChange={(e) => {
+                                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                                    setSelectedMembers(values);
+                                }}
+                                className="select select-bordered w-full h-32"
+                            >
+                                {users.map(user => (
+                                    <option key={user._id} value={user._id}>
+                                        {user.name} ({user.email})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+
                         <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">
                             Crear Proyecto
                         </button>
