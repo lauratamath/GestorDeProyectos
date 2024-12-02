@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createProject, getProjects, getCurrentUser, deleteProject, getUsers } from '../../services/api';
 import Board from '../Kanban/Board';
+import { useAuth } from '../hooks/useAuth';
 import logo from '../images/logo2.png';
 
 const Dashboard = () => {
@@ -10,6 +11,7 @@ const Dashboard = () => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
     const [users, setUsers] = useState([]);
+    const { logout } = useAuth();
 
 
     useEffect(() => {
@@ -86,12 +88,15 @@ const Dashboard = () => {
                         Tablero Kanban
                     </h1>
                 </div>
-                <div className="flex md:text-2xl text-lg text-c-Blue font-medium text-center">
-                        Hola,{' '}
-                        <p className="font-semibold ml-1 text-c-Orange hover:text-c-Orange2">
-                            {userName || 'Usuario'}
-                        </p>
-                        !
+                <div className='flex flex-col items-start '>
+                    <div className="flex md:text-2xl text-lg text-c-Blue font-medium text-center">
+                            Hola,{' '}
+                            <p className="font-semibold ml-1 text-c-Orange hover:text-c-Orange2">
+                                {userName || 'Usuario'}
+                            </p>
+                            !
+                    </div>
+                    <button onClick={logout} className="px-0 py-1 text-xs text-c-Orange hover:text-c-Orange2 bg-transparent rounded"> Cerrar Sesión </button>
                 </div>
             </div>
             <hr className='bg-c-Orange2 mb-5 h-1'/>

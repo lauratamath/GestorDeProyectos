@@ -14,6 +14,14 @@ if (!process.env.MONGO_URI) {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+//reload para manejar las rutas de cliente
+app.use(express.static('path/to/your/build/folder'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'path/to/your/build/folder', 'index.html'));
+});
+
+
 // Middlewares
 app.use(express.json());
 app.use(cors());
