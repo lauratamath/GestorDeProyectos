@@ -1,3 +1,4 @@
+//frontend/src/components/Kanban/projectList.jsx:
 import React, { useState, useEffect } from 'react';
 import { getProjects, updateProject, deleteProject } from '../../services/api';
 

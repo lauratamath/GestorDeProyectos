@@ -93,13 +93,13 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                     <div className="flex justify-between mt-4">
                         <button
                             onClick={handleSaveChanges}
-                            className="btn btn-primary"
+                            className="btn btn-primary justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 outline-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
                         >
                             Guardar
                         </button>
                         <button
                             onClick={() => setIsEditing(false)}
-                            className="btn btn-secondary"
+                            className="btn btn-secondary justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
                         >
                             Cancelar
                         </button>
