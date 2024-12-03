@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createProject, getProjects, getCurrentUser, deleteProject, getUsers } from '../../services/api';
-import Board from '../Kanban/Board';
+import { useNavigate } from 'react-router-dom';
+import { createProject, getProjects, getCurrentUser, getUsers } from '../../services/api';
 import { useAuth } from '../hooks/useAuth';
 import logo from '../images/logo2.png';
 
@@ -8,11 +8,10 @@ const Dashboard = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState({ name: '', description: '' });
     const [selectedMembers, setSelectedMembers] = useState([]);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
+    const [userName, setUserName] = useState('');
     const [users, setUsers] = useState([]);
     const { logout } = useAuth();
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -39,7 +38,6 @@ const Dashboard = () => {
 
         fetchData();
     }, []);
-    
 
     const handleCreateProject = async (e) => {
         e.preventDefault();
@@ -54,29 +52,10 @@ const Dashboard = () => {
             setProjects([...projects, response.data]);
             setNewProject({ name: '', description: '' });
             setSelectedMembers([]);
-            setSelectedProject(response.data._id);
         } catch (err) {
             console.error('Error creando el proyecto:', err);
         }
     };
-
-    const handleDeleteProject = async () => {
-        if (selectedProject) {
-            const token = localStorage.getItem('token');
-            try {
-                const response = await deleteProject(selectedProject, token); // Llamada a la función deleteProject
-                console.log('Proyecto eliminado', response.data); // Verifica la respuesta del servidor
-    
-                // Actualizar la lista de proyectos y desmarcar el proyecto seleccionado
-                setProjects(projects.filter(project => project._id !== selectedProject));
-                setSelectedProject(null); // Desmarcar el proyecto seleccionado
-            } catch (err) {
-                console.error('Error eliminando el proyecto:', err);
-            }
-        }
-    };
-    
-    
 
     return (
         <div className="p-6 bg-base-100 min-h-screen font-inter">
@@ -128,68 +107,46 @@ const Dashboard = () => {
                             <select
                                 multiple
                                 value={selectedMembers}
-                                onChange={(e) => {
-                                    const values = Array.from(e.target.selectedOptions, option => option.value);
-                                    setSelectedMembers(values);
-                                }}
+                                onChange={(e) =>
+                                    setSelectedMembers(Array.from(e.target.selectedOptions, (option) => option.value))
+                                }
                                 className="select select-bordered w-full h-32"
                             >
-                                {users.map(user => (
-                                    <option key={user._id} value={user._id}>
-                                        {user.name} ({user.email})
-                                    </option>
-                                ))}
+                            {users.map((user) => (
+                                <option key={user._id} value={user._id}>
+                                {user.name} ({user.email})
+                                </option>
+                            ))}
                             </select>
                         </div>
-
-
-                        <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">
+                        <button type="submit" className="btn bg-c-Orange outline-0 hover:bg-c-Orange2 text-white w-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange border-transparent">
                             Crear Proyecto
                         </button>
-                    </form>
-                </div>
-
-                {/* Dropdown para seleccionar un proyecto */}
-                <div className="p-6 rounded-lg shadow-lg  bg-c-Grey">
-                    <h2 className="md:text-2xl text-lg font-semibold  text-c-Blue mb-4">Selecciona un Proyecto</h2>
-                    <select
-                        value={selectedProject || ''}
-                        onChange={(e) => setSelectedProject(e.target.value)}
-                        className="select select-bordered w-full"
-                    >
-                        <option value="" disabled >-- Selecciona un proyecto --</option>
-                        {projects.map(project => (
-                            <option key={project._id} value={project._id} className='hover:bg-c-Orange'>
-                                {project.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
-            {/* Mostrar el tablero solo si hay un proyecto seleccionado */}
-            {selectedProject ? (
-                <div className="mt-8">
-                    <Board selectedProject={selectedProject} />
-                </div>
-            ) : (
-                <div className="mt-8 text-center text-xl text-gray-200">
-                    Selecciona un proyecto para visualizar las tareas.
-                </div>
-            )}
-
-            {selectedProject && (
-                <div className="mt-8 flex justify-end">
-                    <button
-                        onClick={handleDeleteProject}
-                        className="btn text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
-                    >
-                        Eliminar Proyecto
-                    </button>
-                </div>
-            )}
+            </form>
         </div>
-    );
-};
 
-export default Dashboard;
+        <div className="p-6 rounded-lg shadow-lg bg-c-Grey">
+            <h2 className="md:text-2xl text-lg font-semibold text-c-Blue mb-4">Selecciona un Proyecto</h2>
+            <select
+            onChange={(e) => {
+                const projectId = e.target.value;
+                if (projectId) navigate(`/project/${projectId}`);
+            }}
+            className="select select-bordered w-full"
+            >
+            <option value="" disabled>
+                -- Selecciona un proyecto --
+            </option>
+            {projects.map((project) => (
+                <option key={project._id} value={project._id}>
+                {project.name}
+                </option>
+            ))}
+            </select>
+        </div>
+        </div>
+    </div>
+    );
+    };
+
+    export default Dashboard;
