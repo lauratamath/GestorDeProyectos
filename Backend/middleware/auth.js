@@ -1,15 +1,14 @@
-// backend/middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-    const token = req.header('x-auth-token');
-    if (!token) return res.status(401).json({ msg: 'No hay token, autorización denegada' });
-
+const authMiddleware = (req, res, next) => {
     try {
+        const token = req.header('x-auth-token');
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
-    } catch (err) {
-        res.status(401).json({ msg: 'Token no válido' });
+    } catch (error) {
+        res.status(401).json({ message: 'Por favor autentícate' });
     }
 };
+
+module.exports = authMiddleware;

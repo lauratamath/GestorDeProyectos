@@ -89,7 +89,7 @@ export const updateProjectMembers = async (projectId, members, token) => {
 
 // Obtener datos del usuario autenticado
 export const getCurrentUser = async (token) => {
-    return await axios.get(`${API_URL}/auth/me`, { 
+    return await axios.get(`${API_URL}/auth/profile`, { 
         headers: { 'x-auth-token': token },
     });
 };
