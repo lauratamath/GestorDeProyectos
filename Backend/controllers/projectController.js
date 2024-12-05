@@ -18,6 +18,19 @@ const projectController = {
         }
     },
 
+    // Obtener miembros del proyecto
+    getProjectMembers: async (req, res) => {
+        try {
+            const project = await Project.findById(req.params.projectId).populate('members', 'name email');
+            if (!project) {
+                return res.status(404).json({ error: 'Proyecto no encontrado' });
+            }
+            res.json(project.members);  // Aquí estás devolviendo los miembros
+        } catch (err) {
+            res.status(500).json({ error: 'Error al obtener miembros', details: err.message });
+        }
+    },
+
     getAllProjects: async (req, res) => {
         try {
             const projects = await Project.find({

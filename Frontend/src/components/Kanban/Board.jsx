@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { getTasks, getUsers, createTask, updateTaskStatus, deleteTask, updateTask } from '../../services/api';
+import { useState, useEffect } from 'react';
+import { getTasks, getUsers, createTask, updateTaskStatus, deleteTask, updateTask, getProjectMembers  } from '../../services/api';
 import Column from './Column';
 
 const Board = ({ selectedProject }) => {
     const [tasks, setTasks] = useState([]);
-    const [users, setUsers] = useState([]);
+    const  setUsers = useState([]);
+    const [projectMembers, setProjectMembers] = useState([]); // Nuevo estado para los miembros del proyecto
     const [newTask, setNewTask] = useState({
         title: '',
         description: '',
@@ -15,9 +16,18 @@ const Board = ({ selectedProject }) => {
     useEffect(() => {
         if (selectedProject) {
             const token = localStorage.getItem('token');
+            
+            // Obtener las tareas
             getTasks(selectedProject, token).then(response => setTasks(response.data));
+    
+            // Obtener los miembros del proyecto
+            getProjectMembers(selectedProject, token).then(response => {
+                console.log(response.data);  // Agrega un console log aquí para ver los miembros
+                setProjectMembers(response.data); // Almacenar los miembros del proyecto
+            }).catch(err => console.error('Error al obtener los miembros del proyecto:', err));
         }
     }, [selectedProject]);
+    
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -91,8 +101,8 @@ const Board = ({ selectedProject }) => {
                         className="select select-bordered w-full"
                     >
                         <option value="" disabled>Asignar a</option>
-                        {users.map(user => (
-                            <option key={user._id} value={user._id}>{user.name}</option>
+                        {projectMembers.map(member => (
+                            <option key={member._id} value={member._id}>{member.name}</option>
                         ))}
                     </select>
                     <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">Agregar tarea</button>

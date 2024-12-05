@@ -15,6 +15,12 @@ export const getProjects = async (token) => {
     });
 };
 
+export const getProjectById = async (projectId, token) => {
+    return await axios.get(`${API_URL}/projects/${projectId}/members`, {
+        headers: { 'x-auth-token': token },
+    });
+};
+
 // Crear tarea
 export const createTask = async (title, description, dueDate, projectId, assignedTo, token) => {
     return await axios.post(`${API_URL}/tasks`, { title, description, dueDate, projectId, assignedTo }, {
@@ -94,3 +100,9 @@ export const getCurrentUser = async (token) => {
     });
 };
 
+// Obtener los miembros de un proyecto específico
+export const getProjectMembers = async (projectId, token) => {
+    return axios.get(`${API_URL}/projects/${projectId}/members`, {
+        headers: { 'x-auth-token': token },
+    });
+};
