@@ -9,7 +9,7 @@ const projectController = {
                 name,
                 description,
                 userId: req.user.id,
-                members: members || [],
+                members: [...new Set([...(members || []), req.user.id])],
             });
             await project.save();
             res.status(201).json(project);

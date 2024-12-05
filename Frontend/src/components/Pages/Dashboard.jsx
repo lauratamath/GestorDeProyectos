@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProject, getProjects, getCurrentUser, getUsers } from '../../services/api';
 import { useAuth } from '../hooks/useAuth';
@@ -128,20 +128,21 @@ const Dashboard = () => {
         <div className="p-6 rounded-lg shadow-lg bg-c-Grey">
             <h2 className="md:text-2xl text-lg font-semibold text-c-Blue mb-4">Selecciona un Proyecto</h2>
             <select
-            onChange={(e) => {
-                const projectId = e.target.value;
-                if (projectId) navigate(`/project/${projectId}`);
-            }}
-            className="select select-bordered w-full"
+                value="" // Asegúrate de que el valor inicial sea vacío
+                onChange={(e) => {
+                    const projectId = e.target.value;
+                    if (projectId) navigate(`/project/${projectId}`);
+                }}
+                className="select select-bordered w-full"
             >
-            <option value="" disabled>
-                -- Selecciona un proyecto --
-            </option>
-            {projects.map((project) => (
-                <option key={project._id} value={project._id}>
-                {project.name}
+                <option value="" disabled>
+                    -- Selecciona un proyecto --
                 </option>
-            ))}
+                {projects.map((project) => (
+                    <option key={project._id} value={project._id}>
+                        {project.name}
+                    </option>
+                ))}
             </select>
         </div>
         </div>
@@ -150,3 +151,4 @@ const Dashboard = () => {
     };
 
     export default Dashboard;
+ 
