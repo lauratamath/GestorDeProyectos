@@ -1,5 +1,3 @@
-// frontend/components/Kanban/Column.jsx
-import React from 'react';
 import Card from './Card';
 
 const Column = ({ status, tasks, onStatusChange, onDeleteTask, onEditTask }) => {

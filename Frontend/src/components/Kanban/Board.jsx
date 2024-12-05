@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { getTasks, getUsers, createTask, updateTaskStatus, deleteTask, updateTask, getProjectMembers  } from '../../services/api';
+import { useParams, useNavigate } from 'react-router-dom';
+//import { getTasks, getProjectMembers, updateTaskStatus, deleteTask, updateTask, createTask } from '../../services/api';
+import { getTasks, getUsers, createTask, updateTaskStatus, deleteTask, updateTask, getProjectMembers, deleteProject  } from '../../services/api';
 import Column from './Column';
+import TaskModal from './TaskModal';  // Importamos el modal
 
 const Board = ({ selectedProject }) => {
+    const navigate = useNavigate();
+    const { projectId } = useParams();
     const [tasks, setTasks] = useState([]);
     const  setUsers = useState([]);
     const [projectMembers, setProjectMembers] = useState([]); // Nuevo estado para los miembros del proyecto
@@ -12,22 +17,21 @@ const Board = ({ selectedProject }) => {
         dueDate: '',
         assignedTo: ''
     });
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (selectedProject) {
             const token = localStorage.getItem('token');
-            
+
             // Obtener las tareas
             getTasks(selectedProject, token).then(response => setTasks(response.data));
-    
+
             // Obtener los miembros del proyecto
             getProjectMembers(selectedProject, token).then(response => {
-                console.log(response.data);  // Agrega un console log aquí para ver los miembros
                 setProjectMembers(response.data); // Almacenar los miembros del proyecto
             }).catch(err => console.error('Error al obtener los miembros del proyecto:', err));
         }
     }, [selectedProject]);
-    
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -48,9 +52,20 @@ const Board = ({ selectedProject }) => {
             .then(response => {
                 setTasks([...tasks, response.data]);
                 setNewTask({ title: '', description: '', dueDate: '', assignedTo: '' });
+                setIsModalOpen(false);
             })
             .catch(err => console.error(err));
     };
+
+    const handleDeleteProject = async () => {
+        const token = localStorage.getItem('token');
+        try {
+          await deleteProject(projectId, token);
+          navigate('/dashboard'); // Redirige después de eliminar
+        } catch (err) {
+          console.error('Error eliminando el proyecto:', err);
+        }
+      };
 
     const handleDeleteTask = (taskId) => {
         const token = localStorage.getItem('token');
@@ -72,42 +87,30 @@ const Board = ({ selectedProject }) => {
 
     return (
         <div className="py-6 px-2 bg-base-100 min-h-screen font-inter">
-            <div className="bg-c-Grey p-6 rounded-lg shadow-lg mb-8">
-                <h2 className="md:text-2xl text-lg font-semibold  text-c-Blue mb-4">Agregar nueva tarea</h2>
-                <form onSubmit={handleAddTask} className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="Título"
-                        value={newTask.title}
-                        onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                        className="input input-bordered w-full"
-                        required
-                    />
-                    <textarea
-                        placeholder="Descripción"
-                        value={newTask.description}
-                        onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                        className="textarea textarea-bordered w-full"
-                    />
-                    <input
-                        type="date"
-                        value={newTask.dueDate}
-                        onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                        className="input input-bordered w-full"
-                    />
-                    <select
-                        value={newTask.assignedTo}
-                        onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
-                        className="select select-bordered w-full"
-                    >
-                        <option value="" disabled>Asignar a</option>
-                        {projectMembers.map(member => (
-                            <option key={member._id} value={member._id}>{member.name}</option>
-                        ))}
-                    </select>
-                    <button type="submit" className="btn btn-primary bg-c-Orange hover:bg-c-Orange2 text-white w-full outline-none border-transparent hover:border-transparent">Agregar tarea</button>
-                </form>
+            <div className='flex justify-end max-h-fit mb-5'>
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="max-w-fit flex align-middle justify-center py-2 px-2 border mr-4 border-transparent text-xs font-medium rounded-md bg-c-Orange hover:bg-c-Orange2 text-white"
+                >
+                    Crear nueva tarea
+                </button>
+
+                <button
+                    onClick={handleDeleteProject}
+                    className="max-w-fit flex align-middle justify-center py-2 px-2 border border-transparent text-xs font-medium rounded-mdbg-white text-c-Orange hover:text-c-Orange2  hover:bg-white"
+                >
+                    Eliminar Proyecto
+                </button>
             </div>
+            
+            <TaskModal 
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                handleAddTask={handleAddTask}
+                newTask={newTask}
+                setNewTask={setNewTask}
+                projectMembers={projectMembers}
+            />
 
             <div className="grid grid-cols-3 font-semibold text-c-Blue md:text-2xl text-lg gap-6">
                 {['Por hacer', 'En curso', 'Finalizada'].map(status => (

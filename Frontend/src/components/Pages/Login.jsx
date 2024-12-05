@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import logo from '../images/logo.png'
@@ -36,7 +36,7 @@ const Login = () => {
     return (
         <div className="font-inter bg-login-background flex flex-col justify-center px-6 py-12 md:px-8 p-6 bg-base-100 min-h-screen">
             <div className=" bg-white p-6 gap-0 rounded-custom flex flex-col justify-center items-center md:w-whiteBox-W w-full md:h-whiteBox-H shadow-custom mx-auto">
-                <img src={logo} alt="cover" className='max-auto md:h-loginImg-H h-20' w-auto />
+                <img src={logo} alt="cover" className='max-auto md:h-loginImg-H h-20 w-auto'  />
                 <div className="mt-6 md:mx-auto md:w-72 space-y-10 w-full">
                     <form onSubmit={onSubmit}>
                         <div>
@@ -72,7 +72,7 @@ const Login = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
+                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2"
                             >
                                 Iniciar Sesión
                             </button>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { updateTask, deleteTask } from '../../services/api'; 
+import { useState } from 'react';
+//import { updateTask, deleteTask } from '../../services/api'; 
 import edit from '../images/edit.png'
 import deleteIcon from '../images/closed.png'
 import delete2 from '../images/open.png'
@@ -14,10 +14,10 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
 
     // Asignamos las clases dependiendo si está vencida o no, pero solo si no está finalizada
     const cardClasses = task.status === "Finalizada" 
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4" // Color normal si está finalizada
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 static static" // Color normal si está finalizada
         : isOverdue
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error" // Rojo si está vencida y no finalizada
-        : "card p-4 shadow-md rounded-md mt-1 mb-4"; // Color normal si no está vencida
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error static" // Rojo si está vencida y no finalizada
+        : "card p-4 shadow-md rounded-md mt-1 mb-4 static"; // Color normal si no está vencida
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -93,13 +93,13 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                     <div className="flex justify-between mt-4">
                         <button
                             onClick={handleSaveChanges}
-                            className="btn btn-primary justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 outline-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
+                            className="btn justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 outline-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
                         >
                             Guardar
                         </button>
                         <button
                             onClick={() => setIsEditing(false)}
-                            className="btn btn-secondary justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
+                            className="btn justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
                         >
                             Cancelar
                         </button>
