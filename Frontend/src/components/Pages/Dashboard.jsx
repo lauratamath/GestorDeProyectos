@@ -57,6 +57,14 @@ const Dashboard = () => {
         }
     };
 
+    const handleCheckboxChange = (userId) => {
+        setSelectedMembers((prevSelected) =>
+            prevSelected.includes(userId)
+                ? prevSelected.filter((id) => id !== userId)  // Desmarcar
+                : [...prevSelected, userId] // Marcar
+        );
+    };
+
     return (
         <div className="p-6 bg-base-100 min-h-screen font-inter">
             {/* Encabezado */}
@@ -104,20 +112,20 @@ const Dashboard = () => {
                             <label className="label">
                                 <span className="label-text">Seleccionar Miembros</span>
                             </label>
-                            <select
-                                multiple
-                                value={selectedMembers}
-                                onChange={(e) =>
-                                    setSelectedMembers(Array.from(e.target.selectedOptions, (option) => option.value))
-                                }
-                                className="select select-bordered w-full h-32"
-                            >
-                            {users.map((user) => (
-                                <option key={user._id} value={user._id}>
-                                {user.name} ({user.email})
-                                </option>
-                            ))}
-                            </select>
+                            <div className="space-y-2">
+                                {users.map((user) => (
+                                    <label key={user._id} className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            value={user._id}
+                                            checked={selectedMembers.includes(user._id)}
+                                            onChange={() => handleCheckboxChange(user._id)}
+                                            className="checkbox checkbox-bordered"
+                                        />
+                                        <span>{user.name} ({user.email})</span>
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                         <button type="submit" className="btn bg-c-Orange outline-0 hover:bg-c-Orange2 text-white w-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange border-transparent">
                             Crear Proyecto

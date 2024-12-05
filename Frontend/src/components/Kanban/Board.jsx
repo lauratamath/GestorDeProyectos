@@ -97,7 +97,7 @@ const Board = ({ selectedProject }) => {
 
                 <button
                     onClick={handleDeleteProject}
-                    className="max-w-fit flex align-middle justify-center py-2 px-2 border border-transparent text-xs font-medium rounded-mdbg-white text-c-Orange hover:text-c-Orange2  hover:bg-white"
+                    className="max-w-fit flex align-middle justify-center py-2 px-2 border border-transparent text-xs font-medium rounded-md bg-white text-c-Orange hover:text-c-Orange2 hover:bg-gray-100"
                 >
                     Eliminar Proyecto
                 </button>

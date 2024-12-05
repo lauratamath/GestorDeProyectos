@@ -99,7 +99,7 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                         </button>
                         <button
                             onClick={() => setIsEditing(false)}
-                            className="btn justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-c-Orange hover:bg-c-Orange2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-c-Orange"
+                            className="btn justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md  bg-white text-c-Orange hover:text-c-Orange2 hover:bg-gray-100"
                         >
                             Cancelar
                         </button>
