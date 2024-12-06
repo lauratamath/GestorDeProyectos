@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState } from 'react'
+import { useDrag } from 'react-dnd'
 import edit from '../images/edit.png'
 import deleteIcon from '../images/closed.png'
 import delete2 from '../images/open.png'
@@ -7,19 +8,32 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask, projectMembers }
     const [isEditing, setIsEditing] = useState(false);
     const [editedTask, setEditedTask] = useState({
         ...task,
-        assignedTo: task.assignedTo || ''  // Inicializa correctamente el campo 'assignedTo'
+        assignedTo: task.assignedTo || '' 
     });
     const [hoveringDelete, setHoveringDelete] = useState(false);
+
+    // Drag source
+    const [{ isDragging }, drag] = useDrag(() => ({
+        type: 'CARD',
+        item: { id: task._id, currentStatus: task.status }, // Datos de la tarjeta
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    }));
+
+    const cardClassesDrag = `card p-4 shadow-md rounded-md mt-1 mb-4 static ${
+        isDragging ? 'opacity-50' : ''
+    }`;
 
     // Vencimiento de fecha
     const isOverdue = new Date(task.dueDate) < new Date();
 
     // Asignamos las clases dependiendo si está vencida o no, pero solo si no está finalizada
     const cardClasses = task.status === "Finalizada" 
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 static static" // Color normal si está finalizada
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 static font-medium" // Color normal si está finalizada
         : isOverdue
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error static" // Rojo si está vencida y no finalizada
-        : "card p-4 shadow-md rounded-md mt-1 mb-4 static"; // Color normal si no está vencida
+        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error  font-medium" // Rojo si está vencida y no finalizada
+        : "card p-4 shadow-md rounded-md mt-1 mb-4  font-medium"; // Color normal si no está vencida
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,19 +41,18 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask, projectMembers }
     };
 
     const handleSaveChanges = () => {
-        console.log('Tarea a guardar:', editedTask);
         // Guardar los cambios
         onEditTask(editedTask);
         setIsEditing(false); // Salimos del modo de edición
     };
 
     return (
-        <div className={cardClasses}>
+        <div ref={drag} className={cardClassesDrag}>
             {!isEditing ? (
                 <>
                     <h3 className="font-bold text-lg text-c-Orange capitalize">{task.title}</h3>
                     <p className="font-medium"><strong>Descripción: </strong>{task.description}</p>
-                    <p className="font-medium"><strong>Fecha de vencimiento: </strong>{new Date(task.dueDate).toLocaleDateString()}</p>
+                    <p className={cardClasses}><strong>Fecha de vencimiento: </strong>{new Date(task.dueDate).toLocaleDateString()}</p>
                     <p className="font-medium capitalize"><strong>Asignada a: </strong>{task.assignedToName || 'No asignada'}</p>
                     <div className="flex justify-between items-center mt-4">
                         <select

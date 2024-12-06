@@ -11,7 +11,7 @@ const taskController = {
             let assignedToName = '';
             if (assignedTo) {
                 const user = await User.findById(assignedTo);
-                assignedToName = user ? user.name : '';  // Si el usuario existe, obtenemos su nombre
+                assignedToName = user ? user.name : '';
             }
             
             const task = new Task({
@@ -19,8 +19,8 @@ const taskController = {
                 description,
                 dueDate,
                 projectId,
-                assignedTo: assignedTo || req.user.id,  // Asignamos el usuario
-                assignedToName,  // Guardamos el nombre del usuario
+                assignedTo: assignedTo || req.user.id,
+                assignedToName,  // Guardar nombre de usuario
             });
             
             await task.save();
@@ -52,7 +52,7 @@ const taskController = {
     
             const updatedTask = await Task.findByIdAndUpdate(
                 req.params.taskId,
-                { ...req.body, assignedToName }, // Incluye el assignedToName
+                { ...req.body, assignedToName },
                 { new: true }
             );
     
@@ -73,7 +73,44 @@ const taskController = {
         } catch (err) {
             res.status(500).json({ error: 'Error al eliminar la tarea', details: err.message });
         }
+    },
+
+    onStatusChange: async (taskId, newStatus) => {
+        try {
+            // Actualiza localmente primero
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task._id === taskId ? { ...task, status: newStatus } : task
+                )
+            );
+    
+            // Llama al backend para actualizar el estado
+            const response = await fetch(`/api/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al actualizar el estado de la tarea en el servidor');
+            }
+    
+            // Si es necesario, actualiza con la respuesta del servidor
+            const updatedTask = await response.json();
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task._id === taskId ? updatedTask : task
+                )
+            );
+        } catch (error) {
+            console.error(error.message);
+        }
+    
     }
+    
 };
 
 module.exports = taskController;

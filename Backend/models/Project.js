@@ -16,7 +16,7 @@ const projectSchema = new mongoose.Schema({
     },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Referencia al modelo User
+        ref: 'User',
     }],
     tasks: [{
         type: mongoose.Schema.Types.ObjectId,

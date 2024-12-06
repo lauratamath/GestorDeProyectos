@@ -8,7 +8,7 @@ const Board = ({ selectedProject }) => {
     const navigate = useNavigate();
     const { projectId } = useParams();
     const [tasks, setTasks] = useState([]);
-    const [projectMembers, setProjectMembers] = useState([]); // Miembros del proyecto
+    const [projectMembers, setProjectMembers] = useState([]);
     const [errorMessage, setErrorMessage] = useState("")
     const [newTask, setNewTask] = useState({
         title: '',
@@ -21,23 +21,39 @@ const Board = ({ selectedProject }) => {
     useEffect(() => {
         if (selectedProject) {
             const token = localStorage.getItem('token');
-
+    
             // Obtener las tareas
             getTasks(selectedProject, token).then(response => setTasks(response.data));
-
+    
             // Obtener los miembros del proyecto
             getProjectMembers(selectedProject, token).then(response => {
                 setProjectMembers(response.data); // Almacenar los miembros del proyecto
             }).catch(err => console.error('Error al obtener los miembros del proyecto:', err));
         }
     }, [selectedProject]);
+    
 
-    const handleColumnChange = (taskId, status) => {
+    const handleColumnChange = (taskId, newStatus) => {
         const token = localStorage.getItem('token');
-        updateTaskStatus(taskId, status, token).then(response => {
-            setTasks(tasks.map(task => (task._id === taskId ? response.data : task)));
-        });
+    
+        // Hacer la solicitud al backend para actualizar el estado de la tarea
+        updateTaskStatus(taskId, newStatus, token)
+            .then((response) => {
+                // Actualizamos el estado de las tareas sin necesidad de hacer una nueva llamada a la API
+                const updatedTask = response.data;
+                
+                // Actualizamos la lista de tareas en el estado sin necesidad de hacer un refresh
+                setTasks(prevTasks => prevTasks.map(task => 
+                    task._id === taskId ? updatedTask : task
+                ));
+            })
+            .catch(error => {
+                console.error("Error al actualizar el estado de la tarea:", error);
+            });
     };
+    
+    
+    
 
     const handleAddTask = (e) => {
         e.preventDefault();
