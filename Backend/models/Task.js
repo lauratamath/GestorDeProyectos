@@ -19,7 +19,10 @@ const taskSchema = new mongoose.Schema({
     },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User', // Referencia al modelo User
+    },
+    assignedToName: {  // Nuevo campo para almacenar el nombre del usuario
+        type: String,
     },
     projectId: {
         type: mongoose.Schema.Types.ObjectId,

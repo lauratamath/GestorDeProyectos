@@ -1,16 +1,28 @@
+// backend/controllers/taskController.js
 const Task = require('../models/Task');
+const User = require('../models/User');  // Asegúrate de tener acceso al modelo User
 
 const taskController = {
     createTask: async (req, res) => {
         const { title, description, dueDate, projectId, assignedTo } = req.body;
+        
         try {
+            // Verificamos si el assignedTo existe
+            let assignedToName = '';
+            if (assignedTo) {
+                const user = await User.findById(assignedTo);
+                assignedToName = user ? user.name : '';  // Si el usuario existe, obtenemos su nombre
+            }
+            
             const task = new Task({
                 title,
                 description,
                 dueDate,
                 projectId,
-                assignedTo: assignedTo || req.user.id,
+                assignedTo: assignedTo || req.user.id,  // Asignamos el usuario
+                assignedToName,  // Guardamos el nombre del usuario
             });
+            
             await task.save();
             res.status(201).json(task);
         } catch (err) {
@@ -29,16 +41,27 @@ const taskController = {
 
     updateTask: async (req, res) => {
         try {
-            const task = await Task.findByIdAndUpdate(
+            const { assignedTo } = req.body;
+    
+            // Si assignedTo tiene un valor, obtenemos el nombre correspondiente
+            let assignedToName = '';
+            if (assignedTo) {
+                const user = await User.findById(assignedTo);
+                assignedToName = user ? user.name : '';
+            }
+    
+            const updatedTask = await Task.findByIdAndUpdate(
                 req.params.taskId,
-                { ...req.body },
+                { ...req.body, assignedToName }, // Incluye el assignedToName
                 { new: true }
             );
-            res.json(task);
+    
+            res.json(updatedTask);
         } catch (err) {
             res.status(500).json({ error: 'Error al actualizar la tarea', details: err.message });
         }
     },
+    
 
     deleteTask: async (req, res) => {
         try {

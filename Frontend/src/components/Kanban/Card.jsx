@@ -1,12 +1,14 @@
 import { useState } from 'react';
-//import { updateTask, deleteTask } from '../../services/api'; 
 import edit from '../images/edit.png'
 import deleteIcon from '../images/closed.png'
 import delete2 from '../images/open.png'
 
-const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
+const Card = ({ task, onStatusChange, onDeleteTask, onEditTask, projectMembers }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [editedTask, setEditedTask] = useState(task);
+    const [editedTask, setEditedTask] = useState({
+        ...task,
+        assignedTo: task.assignedTo || ''  // Inicializa correctamente el campo 'assignedTo'
+    });
     const [hoveringDelete, setHoveringDelete] = useState(false);
 
     // Vencimiento de fecha
@@ -25,6 +27,7 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
     };
 
     const handleSaveChanges = () => {
+        console.log('Tarea a guardar:', editedTask);
         // Guardar los cambios
         onEditTask(editedTask);
         setIsEditing(false); // Salimos del modo de edición
@@ -34,10 +37,10 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
         <div className={cardClasses}>
             {!isEditing ? (
                 <>
-                    <h3 className="font-semibold text-lg">{task.title}</h3>
-                    <p>{task.description}</p>
-                    <p>Fecha de vencimiento: {new Date(task.dueDate).toLocaleDateString()}</p>
-
+                    <h3 className="font-bold text-lg text-c-Orange capitalize">{task.title}</h3>
+                    <p className="font-medium"><strong>Descripción: </strong>{task.description}</p>
+                    <p className="font-medium"><strong>Fecha de vencimiento: </strong>{new Date(task.dueDate).toLocaleDateString()}</p>
+                    <p className="font-medium capitalize"><strong>Asignada a: </strong>{task.assignedToName || 'No asignada'}</p>
                     <div className="flex justify-between items-center mt-4">
                         <select
                             value={task.status}
@@ -89,6 +92,24 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask }) => {
                         onChange={handleChange}
                         className="input input-bordered w-full mb-2"
                     />
+
+                    <select
+                        name="assignedTo"
+                        value={editedTask.assignedTo}
+                        onChange={handleChange}
+                        className="select select-bordered w-full"
+                    >
+                        <option value="" disabled>Asignar a</option>
+                        {projectMembers && Array.isArray(projectMembers) ? (
+                            projectMembers.map(member => (
+                                <option key={member._id} value={member._id}>
+                                    {member.name}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No hay miembros disponibles</option>
+                        )}
+                    </select>
 
                     <div className="flex justify-between mt-4">
                         <button

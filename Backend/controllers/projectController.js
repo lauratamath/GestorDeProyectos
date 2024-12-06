@@ -69,7 +69,8 @@ const projectController = {
                 userId: req.user.id,
             });
             if (!project) {
-                return res.status(404).json({ error: 'Proyecto no encontrado' });
+                // Si no se encuentra el proyecto o no coincide el creador
+                return res.status(403).json({ error: 'Ups! No cuentas con los permisos para eliminar este proyecto' });
             }
             res.json({ message: 'Proyecto eliminado con éxito' });
         } catch (err) {
