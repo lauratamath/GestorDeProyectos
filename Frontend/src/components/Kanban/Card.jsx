@@ -30,10 +30,10 @@ const Card = ({ task, onStatusChange, onDeleteTask, onEditTask, projectMembers }
 
     // Asignamos las clases dependiendo si está vencida o no, pero solo si no está finalizada
     const cardClasses = task.status === "Finalizada" 
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 static font-medium" // Color normal si está finalizada
+        ? "card static font-medium" // Color normal si está finalizada
         : isOverdue
-        ? "card p-4 shadow-md rounded-md mt-1 mb-4 text-c-error  font-medium" // Rojo si está vencida y no finalizada
-        : "card p-4 shadow-md rounded-md mt-1 mb-4  font-medium"; // Color normal si no está vencida
+        ? "card text-c-error  font-medium" // Rojo si está vencida y no finalizada
+        : "card font-medium"; // Color normal si no está vencida
 
     const handleChange = (e) => {
         const { name, value } = e.target;

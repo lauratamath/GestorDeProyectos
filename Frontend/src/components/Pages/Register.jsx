@@ -33,7 +33,7 @@ const Register = () => {
             
             setTimeout(() => {
                 navigate('/'); 
-            }, 7000); // 7 segundos
+            }, 5000); // 5 segundos
         } catch (err) {
             setError(err.response?.data?.error || 'Error al registrar usuario REGISTER');
             console.error('Error:', err.response?.data);
@@ -41,13 +41,13 @@ const Register = () => {
     };
 
     return (
-        <div className="font-inter bg-login-background flex min-h-full flex-col justify-center px-6 py-12 md:px-8">
+        <div className="font-inter bg-login-background flex min-h-full flex-col justify-center px-6 min-h-screen py-12 md:px-8">
             <div className=" bg-white p-6 gap-0 rounded-custom flex flex-col justify-center items-center md:w-whiteBox-W w-full md:h-whiteBox-H shadow-custom mx-auto">
-                <img src={logo} alt="cover" className='max-auto md:h-loginImg-H h-20' w-auto/>
-                <div class="mt-6 md:mx-auto md:w-72 space-y-10 w-full">
+                <img src={logo} alt="cover" className='max-auto md:h-loginImg-H h-20 w-auto' />
+                <div className="mt-6 md:mx-auto md:w-72 space-y-10 w-full">
                     <form onSubmit={onSubmit}>
                         <div>
-                            <div class="mb-2 mt-8">
+                            <div className="mb-2 mt-8">
                                 <input
                                     type="text"
                                     name="name"
@@ -69,7 +69,7 @@ const Register = () => {
                                     className="border p-2 text-sm mb-0 w-full bg-white rounded-md py-1.5 text-c-Blue shadow-sm focus:ring-c-Orange focus:ring-1 focus:outline-none focus:shadow-inputLogin"
                                 />
                             </div>
-                            <div class="mt-2 mb-3">
+                            <div className="mt-2 mb-3">
                                 <input
                                     type="password"
                                     name="password"
